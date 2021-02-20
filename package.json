@@ -1,0 +1,21 @@
+{
+  "name": "hoopak",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "script": {
+    "build": "pkg index.js"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.5",
+    "esbuild": "^0.8.49",
+    "esbuild-plugin-sass": "^0.3.3",
+    "@luckycatfactory/esbuild-graphql-loader": "^3.1.1",
+    "eslint": "^7.20.0",
+    "@typescript-eslint/eslint-plugin": "^4.2.0",
+    "pkg": "^4.4.9",
+    "yargs-parser": "^20.2.5",
+    "p-queue": "^6.6.2",
+    "fast-glob": "^3.2.5"
+  }
+}
