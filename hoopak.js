@@ -1,3 +1,10 @@
+// const path = require("path");
+
+// process.env.ESBUILD_BINARY_PATH = path.join(
+//   path.dirname(process.execPath),
+//   "esbuild.exe"
+// );
+
 const yargsParser = require("yargs-parser");
 
 const build = require("./build");

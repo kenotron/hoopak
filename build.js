@@ -10,7 +10,9 @@ const readFileAsync = promisify(readFile);
 const writeFileAsync = promisify(writeFile);
 const mkdirAsync = promisify(mkdir);
 
-const maxWorkers = os.cpus() - 1;
+const maxWorkers = os.cpus().length - 1;
+
+console.log(`building with ${maxWorkers} workers`);
 
 const queue = new PromiseQueue({ concurrency: maxWorkers });
 

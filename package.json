@@ -1,10 +1,11 @@
 {
   "name": "hoopak",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "hoopak.js",
   "license": "MIT",
-  "script": {
-    "build": "pkg index.js"
+  "bin": "hoopak.js",
+  "scripts": {
+    "build": "pkg . --out-path dist"
   },
   "devDependencies": {
     "typescript": "^4.1.5",
@@ -17,5 +18,10 @@
     "yargs-parser": "^20.2.5",
     "p-queue": "^6.6.2",
     "fast-glob": "^3.2.5"
+  },
+  "pkg": {
+    "targets": [
+      "node12"
+    ]
   }
 }
