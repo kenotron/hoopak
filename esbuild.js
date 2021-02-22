@@ -12,15 +12,23 @@ const mkdirAsync = promisify(mkdir);
 
 const maxWorkers = os.cpus().length - 1;
 
-console.log(`building with ${maxWorkers} workers`);
-
-const queue = new PromiseQueue({ concurrency: maxWorkers });
-
 module.exports = async function (options) {
+  console.log(`building with ${maxWorkers} workers`);
+
+  const queue = new PromiseQueue({ concurrency: maxWorkers });
   const { cwd } = options;
-  const tsFiles = await glob(["**/*.ts", "**/*.tsx", "!**/*.d.ts"], {
-    ignore: ["**/node_modules"],
-  });
+  const tsFiles = await glob(
+    [
+      "**/*.ts",
+      "**/*.tsx",
+      "!**/*.d.ts",
+      "!esbuild-transpiled/**",
+      "!ts-transpiled/**",
+    ],
+    {
+      ignore: ["**/node_modules"],
+    }
+  );
 
   queue.addAll(
     tsFiles.map((f) => {
@@ -33,17 +41,14 @@ module.exports = async function (options) {
             const results = await transform(src, { loader: ext });
             const outputFile = path.join(
               cwd,
-              "transpiled",
+              "esbuild-transpiled",
               f.replace(ext, "js")
             );
             const outputPath = path.dirname(outputFile);
 
             await mkdirAsync(outputPath, { recursive: true });
 
-            await writeFileAsync(
-              path.join(cwd, "transpiled", f.replace(ext, "js")),
-              results.code
-            );
+            await writeFileAsync(outputFile, results.code);
           }
         } catch (e) {
           console.error(`Compilation for ${f} has failed:`);

@@ -7,16 +7,21 @@
 
 const yargsParser = require("yargs-parser");
 
-const build = require("./build");
+const esbuild = require("./esbuild");
+const ts = require("./ts");
 
 const args = yargsParser(process.argv.slice(2));
 
 const command = args._[0];
 
 switch (command) {
-  case "build":
+  case "esbuild":
     // do esbuild transpilation
-    build({ cwd: process.cwd() });
+    esbuild({ cwd: process.cwd() });
+    break;
+
+  case "ts":
+    ts({ cwd: process.cwd() });
     break;
 
   case "validate":
