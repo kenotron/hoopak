@@ -30,20 +30,23 @@ module.exports = async function (options) {
     }
   );
 
+  console.log(`transpiling ${tsFiles.length} files`);
+
   queue.addAll(
     tsFiles.map((f) => {
       return async () => {
         try {
           const src = await readFileAsync(path.join(cwd, f), "utf-8");
-          const ext = path.extname(f).slice(1);
+          const ext = path.extname(f);
 
-          if (ext.startsWith("ts")) {
-            const results = await transform(src, { loader: ext });
+          if (f.endsWith(".ts") || f.endsWith(".tsx")) {
+            const results = await transform(src, { loader: ext.slice(1) });
             const outputFile = path.join(
               cwd,
               "esbuild-transpiled",
-              f.replace(ext, "js")
+              f.replace(ext, ".js")
             );
+
             const outputPath = path.dirname(outputFile);
 
             await mkdirAsync(outputPath, { recursive: true });

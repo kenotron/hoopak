@@ -9,6 +9,7 @@ const yargsParser = require("yargs-parser");
 
 const esbuild = require("./esbuild");
 const ts = require("./ts");
+const validate = require("./validate");
 
 const args = yargsParser(process.argv.slice(2));
 
@@ -26,6 +27,7 @@ switch (command) {
 
   case "validate":
     // lint, typecheck
+    validate({ cwd: process.cwd() });
     break;
 
   case "test":

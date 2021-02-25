@@ -14,9 +14,9 @@ async function transpile(chunk) {
   for (const f of chunk) {
     try {
       const src = await readFileAsync(path.join(cwd, f), "utf-8");
-      const ext = path.extname(f).slice(1);
+      const ext = path.extname(f);
 
-      if (ext.startsWith("ts")) {
+      if (f.endsWith(".ts") || f.endsWith(".tsx")) {
         const results = ts.transpileModule(src, {
           target: ts.ScriptTarget.ES2019,
           module: ts.ModuleKind.ES2015,
@@ -25,7 +25,7 @@ async function transpile(chunk) {
         const outputFile = path.join(
           cwd,
           "ts-transpiled",
-          f.replace(ext, "js")
+          f.replace(ext, ".js")
         );
 
         const outputPath = path.dirname(outputFile);
