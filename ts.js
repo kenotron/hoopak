@@ -4,7 +4,7 @@ const os = require("os");
 const path = require("path");
 const { fork } = require("child_process");
 
-const maxWorkers = os.cpus().length - 1;
+const maxWorkers = 64; // os.cpus().length - 1;
 
 module.exports = async function (options) {
   console.log(`building with ${maxWorkers} workers`);
@@ -17,6 +17,7 @@ module.exports = async function (options) {
       "**/*.ts",
       "**/*.tsx",
       "!**/*.d.ts",
+      "!swc-transpiled/**",
       "!esbuild-transpiled/**",
       "!ts-transpiled/**",
     ],

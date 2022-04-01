@@ -8,6 +8,7 @@
 const yargsParser = require("yargs-parser");
 
 const esbuild = require("./esbuild");
+const swc = require("./swc");
 const ts = require("./ts");
 const validate = require("./validate");
 
@@ -19,6 +20,11 @@ switch (command) {
   case "esbuild":
     // do esbuild transpilation
     esbuild({ cwd: process.cwd() });
+    break;
+
+  case "swc":
+    // do esbuild transpilation
+    swc({ cwd: process.cwd() });
     break;
 
   case "ts":

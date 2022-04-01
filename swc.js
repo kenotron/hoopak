@@ -1,6 +1,6 @@
 const os = require("os");
 
-const { transform } = require("esbuild");
+const swc = require("@swc/core");
 const glob = require("fast-glob");
 const { default: PromiseQueue } = require("p-queue");
 const { readFile, writeFile, mkdir } = require("fs");
@@ -19,8 +19,8 @@ module.exports = async function (options) {
 
   const queue = new PromiseQueue({ concurrency: maxWorkers });
   const { cwd } = options;
-  
-  console.time('glob');
+
+  console.time("glob");
 
   const tsFiles = await glob(
     [
@@ -33,15 +33,15 @@ module.exports = async function (options) {
     ],
     {
       ignore: ["**/node_modules/**"],
-      onlyFiles: true
+      onlyFiles: true,
     }
   );
 
-  console.timeEnd('glob');
+  console.timeEnd("glob");
 
   console.log(`transpiling ${tsFiles.length} files`);
 
-  console.time('transpile');
+  console.time("transpile");
 
   await queue.addAll(
     tsFiles.map((f) => {
@@ -50,12 +50,38 @@ module.exports = async function (options) {
           const src = await readFileAsync(path.join(cwd, f), "utf-8");
           const ext = path.extname(f);
 
-          if (f.endsWith(".ts") || f.endsWith(".tsx")) {
-            const results = await transform(src, { loader: ext.slice(1) });
+          let results = "";
 
+          if (f.endsWith(".ts")) {
+            results = await swc.transform(src, {
+              sourceMaps: false,
+              jsc: {
+                parser: {
+                  syntax: "typescript",
+                  decorators: true,
+                  tsx: false,
+                },
+                transform: {},
+              },
+            });
+          } else if (f.endsWith(".tsx")) {
+            results = await swc.transform(src, {
+              sourceMaps: false,
+              jsc: {
+                parser: {
+                  syntax: "typescript",
+                  decorators: true,
+                  tsx: true,
+                },
+                transform: {},
+              },
+            });
+          }
+
+          if (results) {
             const outputFile = path.join(
               cwd,
-              // "esbuild-transpiled",
+              "swc-transpiled",
               f.replace(ext, ".js")
             );
 
@@ -75,5 +101,5 @@ module.exports = async function (options) {
 
   await queue.start();
 
-  console.timeEnd('transpile');
+  console.timeEnd("transpile");
 };
